@@ -1,0 +1,75 @@
+\documentclass{article}
+\usepackage{mathptmx}
+\usepackage[landscape,margin=.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{overpic}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{calendar}
+ 
+\makeatletter
+\tikzstyle{week list}=[%
+  execute before day scope={%
+    \ifdate{day of month=1}{\ifdate{equals=\pgfcalendarbeginiso}{}
+      {%
+        % On first of month, except when first date in calendar.
+        \pgfmathsetlength{\pgf@x}{\tikz@lib@cal@month@xshift}%
+        \pgftransformxshift{\pgf@x}
+      }%
+    }{}%
+  }, 
+  execute at begin day scope={%
+    \pgfmathsetlength\pgf@y{\tikz@lib@cal@yshift}%
+    \pgf@y=\pgfcalendarcurrentweekday\pgf@y%
+    \pgftransformyshift{-\pgf@y}%
+  },
+  execute after day scope={%
+    \ifdate{Sunday}{%
+      \pgfmathsetlength{\pgf@x}{\tikz@lib@cal@xshift}%
+      \pgftransformxshift{\pgf@x}
+    }{}%
+  }
+]
+
+\tikzoption{day headings}{\tikzstyle{day heading}=[#1]}
+\tikzstyle{day heading}=[]
+\tikzstyle{day letter headings}=[
+    execute before day scope={ \ifdate{day of month=1}{%
+      \pgfmathsetlength\pgf@ya{\tikz@lib@cal@yshift}%
+      \pgfmathsetlength\pgf@xa{\tikz@lib@cal@xshift}%
+      \pgftransformxshift{\pgf@xa}
+      \foreach \d/\l in {0/M,1/T,2/W,3/T,4/F,5/S,6/S} {
+        \pgf@ya=\d\pgf@ya%
+        \pgftransformxshift{-\pgf@xa}%
+        \pgftransformyshift{-\pgf@ya}%
+        \node[every day,day heading, anchor=base]{\l};%
+      } 
+    }{}%
+  }%
+]
+\makeatother
+
+\pagestyle{empty}
+
+\begin{document}
+\color{white}    
+\vspace*{\fill}
+\fontsize{40}{50}\selectfont
+\begin{overpic}[scale=.2]{images/balou.jpg}
+\put(-1,10){
+\begin{tikzpicture}
+\calendar[
+    dates=2014-01-01 to 2014-01-last,
+    week list,
+    day letter headings,
+    day heading/.style={white, xshift=-1em},
+    month label above left,
+    month text=\%mt \%y0
+];
+\end{tikzpicture}
+}
+\end{overpic}
+\vspace*{\fill}
+\end{document}
+
+
